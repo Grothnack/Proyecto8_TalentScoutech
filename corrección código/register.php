@@ -17,6 +17,10 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
 	$db->query($query) or die("Invalid query");
     header("Location: list_players.php");
 }
+if (!isUserAdmin($userId)) {
+    # Si el usuario no es administrador, redirigir a una página de error o a la página principal
+    header("Location: index.php");
+    exit;
 
 # Show form
 
