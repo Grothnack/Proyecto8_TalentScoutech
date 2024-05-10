@@ -1,23 +1,17 @@
-<?php
+<?php 
+
 require_once dirname(__FILE__) . '/private/conf.php';
-
-# Require logged users
 require dirname(__FILE__) . '/private/auth.php';
-
-if (isset($_POST['body']) && isset($_GET['id'])) {
-	# Just in from POST => save to database
-	$body = $_POST['body'];
+if (isset($_POST['body']) && isset($_GET['id'])) { $playerId = $db->escapeString($_GET['id'])
+	; $userId = $db->escapeString($_COOKIE['userId']);
+		$body = $db->escapeString($_POST['body']);
+		$query = "INSERT INTO comments (playerId, userId, body) VALUES (?, ?, ?)";
+		$stmt = $db->prepare($query); $stmt->bind_param("iss", $playerId, $userId, $body);
+		$stmt->execute(); if ($stmt->affected_rows > 0) { header("Location: list_players.php");
+	exit; } else 
+		{ echo "Error al insertar datos en la base de datos.";
+	} } 
 	
-	$body = SQLite3::escapeString($body);
-
-	$query = "INSERT INTO comments (playerId, userId, body) VALUES ('".$_GET['id']."', '".$_COOKIE['userId']."', '$body')";
-
-	$db->query($query) or die("Invalid query");
-	header("Location: list_players.php");
-}
-
-# Show form
-
 ?>
 <!doctype html>
 <html lang="es">
