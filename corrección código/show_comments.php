@@ -23,7 +23,7 @@ require dirname(__FILE__) . '/private/auth.php';
 # List comments
 if (isset($_GET['id']))
 {
-	$query = "SELECT commentId, username, body FROM comments C, users U WHERE C.playerId =".$_GET['id']." AND U.userId = C.userId order by C.playerId desc";
+	$stmt = $db->prepare("INSERT INTO comments (playerId, userId, body) VALUES (:playerId, :userId, :body)")->bindValue(':playerId', $_GET['id'])->bindValue(':userId', $_COOKIE['userId'])->bindValue(':body', SQLite3::escapeString($_POST['body']))->execute();
 
 	$result = $db->query($query) or die("Invalid query: " . $query );
 
