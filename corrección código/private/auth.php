@@ -7,7 +7,7 @@ $userId = FALSE;
 function areUserAndPasswordValid($user, $password) {
 	global $db, $userId;
 
-    $query = SQLite3::escapeString('SELECT userId, password FROM users WHERE username = "' . $user . '"');
+    $stmt = $db->prepare('SELECT userId, password FROM users WHERE username = :username');
 
 	$result = $db->query($query) or die ("Invalid query: " . $query . ". Field user introduced is: " . $user);
 	$row = $result->fetchArray();
